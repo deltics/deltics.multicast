@@ -44,6 +44,7 @@
 interface
 
   uses
+    Classes,
     Deltics.Multicast.Event,
     Deltics.Multicast.Exceptions,
     Deltics.Multicast.Notify,
@@ -52,50 +53,18 @@ interface
 
 
   type
-    EMultiCastException = Deltics.Multicast.Exceptions.EMulticastException;
-    TMultiCastEvent     = Deltics.Multicast.Event.TMulticastEvent;
-    TMultiCastNotify    = Deltics.Multicast.Notify.TMulticastNotify;
+    EInvalidOperation   = Classes.EInvalidOperation;
+    EHandlerExceptions  = Deltics.Multicast.Exceptions.EHandlerExceptions;
+
+    TMulticastEvent     = Deltics.Multicast.Event.TMulticastEvent;
+    TMulticastNotify    = Deltics.Multicast.Notify.TMulticastNotify;
 
     IOn_Destroy = Deltics.Multicast.Types.IOn_Destroy;
     TOnDestroy = Deltics.Multicast.OnDestroy.TOnDestroy;
 
 
-    Multicast = class
-      class procedure EnableDebugAssertions;
-      class procedure DisableDebugAssertions;
-    end;
-
-
-
-{-- +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ --}
 
 implementation
-
-  uses
-  { vcl: }
-    SysUtils,
-    Deltics.Multicast.Debugging;
-
-
-
-
-
-
-
-
-{ Multicast }
-
-  class procedure Multicast.DisableDebugAssertions;
-  begin
-    DebugAssertions := FALSE;
-  end;
-
-
-  class procedure Multicast.EnableDebugAssertions;
-  begin
-    DebugAssertions := TRUE;
-  end;
-
 
 
 

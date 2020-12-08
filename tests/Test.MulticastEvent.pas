@@ -55,8 +55,6 @@ interface
       procedure DisablingANewlyCreatedEventDisablesTheEvent;
       procedure EventsThatAreDisabledMoreTimesThanTheyAreEnabledRemainDisabled;
       procedure EventsThatAreDisabledAndEnabledEquallyAreEnabled;
-      procedure EventsThatAreEnabledAndDisabledEquallyAreEnabled;
-      procedure EventsThatAreEnabledMultipleTimesThenDisabledOnceRemainEnabled;
       procedure EnablingAnEventThatIsAlreadyEnabledRaisesAssertFailed;
     end;
 
@@ -137,42 +135,13 @@ implementation
 
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
-  procedure TMulticastEventTests.EventsThatAreEnabledAndDisabledEquallyAreEnabled;
-  begin
-    Multicast.DisableDebugAssertions; // Otherwise the first Enable will ASSERT()
-    try
-      sut.Enable;
-      sut.Enable;
-      sut.Disable;
-      sut.Disable;
-
-      Test('Enabled').Assert(sut.Enabled);
-    finally
-      Multicast.EnableDebugAssertions;
-    end;
-  end;
-
-
-  {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
-  procedure TMulticastEventTests.EventsThatAreEnabledMultipleTimesThenDisabledOnceRemainEnabled;
-  begin
-    Multicast.DisableDebugAssertions; // Otherwise the first Enable will ASSERT()
-    try
-      sut.Enable;
-      sut.Enable;
-      sut.Disable;
-
-      Test('Enabled').Assert(sut.Enabled);
-    finally
-      Multicast.EnableDebugAssertions;
-    end;
-  end;
-
-
-  {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
   procedure TMulticastEventTests.EnablingAnEventThatIsAlreadyEnabledRaisesAssertFailed;
   begin
-    Test.RaisesException(EAssertionFailed);//, 'Event is already Enabled');
+  {$ifdef debug_DelticsMulticast}
+    Test.RaisesException(EInvalidOperation, 'Event is already Enabled');
+  {$else}
+    Test.RaisesNoException;
+  {$endif}
 
     Test('Enabled').Assert(sut.Enabled);
     sut.Enable;

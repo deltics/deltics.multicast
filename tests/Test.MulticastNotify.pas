@@ -55,7 +55,7 @@ interface
       procedure NotifyA(Sender: TObject);
       procedure NotifyB(Sender: TObject);
       procedure NotifyException(Sender: TObject);
-      procedure NotifyArgumentException(Sender: TObject);
+      procedure NotifyDummyException(Sender: TObject);
     published
       procedure SetupMethod;
       procedure TeardownMethod;
@@ -67,7 +67,7 @@ interface
       procedure DisabledEventCallsNoHandlersWhenFired;
       procedure ExceptionsRaisedByHandlersArePropogatedToEventTrigger;
       procedure AllHandlersAreCalledIfAnExceptionIsRaisedByOne;
-      procedure AllHandlersAreCalledAndAMulticastExceptionIsRaisedIfMultiplHandlersRaiseExceptions;
+      procedure AllHandlersAreCalledAndAggregateExceptionIsRaisedIfMultiplHandlersRaiseExceptions;
     end;
 
 
@@ -81,6 +81,9 @@ implementation
 
 
 { TMulticastNotifyTests -------------------------------------------------------------------------- }
+
+  type
+    EDummyException = class(Exception);
 
   var
     sut: TMultiCastNotify;
@@ -109,9 +112,9 @@ implementation
 
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
-  procedure TMulticastNotifyTests.NotifyArgumentException(Sender: TObject);
+  procedure TMulticastNotifyTests.NotifyDummyException(Sender: TObject);
   begin
-    raise EArgumentException.Create('Deliberate error');
+    raise EDummyException.Create('Deliberate error');
   end;
 
 
@@ -213,7 +216,7 @@ implementation
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
   procedure TMulticastNotifyTests.ExceptionsRaisedByHandlersArePropogatedToEventTrigger;
   begin
-    Test.RaisesException(Exception, 'Deliberate error');
+    Test.RaisesException(EHandlerExceptions);
 
     sut.Add(NotifyException);
 
@@ -224,13 +227,23 @@ implementation
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
   procedure TMulticastNotifyTests.AllHandlersAreCalledIfAnExceptionIsRaisedByOne;
   begin
-    Test.RaisesException(Exception, 'Deliberate error');
+    Test.RaisesException(EHandlerExceptions);
 
     sut.Add(NotifyException);
     sut.Add(NotifyA);
 
     try
-      sut.DoEvent;
+      try
+        sut.DoEvent;
+      except
+        on e: EHandlerExceptions do
+        begin
+          Test('e.Count').Assert(e.Count).Equals(1);
+          Test('e.Exceptions[0] is Exception').Assert(e[0] is Exception);
+
+          raise;
+        end;
+      end;
 
     finally
       Test('fCallCountA').Assert(fCallCountA).Equals(1);
@@ -239,22 +252,22 @@ implementation
 
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
-  procedure TMulticastNotifyTests.AllHandlersAreCalledAndAMulticastExceptionIsRaisedIfMultiplHandlersRaiseExceptions;
+  procedure TMulticastNotifyTests.AllHandlersAreCalledAndAggregateExceptionIsRaisedIfMultiplHandlersRaiseExceptions;
   begin
-    Test.RaisesException(EMulticastException);
+    Test.RaisesException(EHandlerExceptions);
 
     try
       sut.Add(NotifyException);
-      sut.Add(NotifyArgumentException);
+      sut.Add(NotifyDummyException);
 
       sut.DoEvent;
 
     except
-      on e: EMulticastException do
+      on e: EHandlerExceptions do
       begin
         Test('e.Count').Assert(e.Count).Equals(2);
         Test('e[0] is Exceptions').Assert(e[0] is Exception);
-        Test('e[1] is EArgumentException').Assert(e[1] is EArgumentException);
+        Test('e[1] is EDummyException').Assert(e[1] is EDummyException);
 
         raise;
       end;

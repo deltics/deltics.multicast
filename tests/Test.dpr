@@ -10,7 +10,6 @@ uses
   SysUtils,
   Deltics.Smoketest,
   Deltics.Multicast in '..\src\Deltics.Multicast.pas',
-  Deltics.Multicast.Debugging in '..\src\Deltics.Multicast.Debugging.pas',
   Deltics.Multicast.Event in '..\src\Deltics.Multicast.Event.pas',
   Deltics.Multicast.Exceptions in '..\src\Deltics.Multicast.Exceptions.pas',
   Deltics.Multicast.Notify in '..\src\Deltics.Multicast.Notify.pas',
