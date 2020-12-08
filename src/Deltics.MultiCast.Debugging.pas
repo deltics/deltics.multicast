@@ -38,7 +38,7 @@
 
 {$i deltics.multicast.inc}
 
-  unit Deltics.MultiCast.Debugging;
+  unit Deltics.Multicast.Debugging;
 
 
 interface

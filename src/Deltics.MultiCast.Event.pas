@@ -38,7 +38,7 @@
 
 {$i deltics.multicast.inc}
 
-  unit Deltics.MultiCast.Event;
+  unit Deltics.Multicast.Event;
 
 
 interface

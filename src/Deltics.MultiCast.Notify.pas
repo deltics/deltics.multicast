@@ -38,7 +38,7 @@
 
 {$i deltics.multicast.inc}
 
-  unit Deltics.MultiCast.Notify;
+  unit Deltics.Multicast.Notify;
 
 
 interface
