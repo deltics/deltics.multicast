@@ -226,6 +226,18 @@ implementation
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
   procedure TMulticastNotifyTests.AllHandlersAreCalledIfAnExceptionIsRaisedByOne;
+
+  {$ifdef DELPHI10_4}
+    // In 10.4.1, re-raising the exception crashes immediately with an AV exception.
+    //  This is a compiler bug that can be avoided by passing the capture exception (e)
+    //  to a procedure (for some reason).
+    procedure DoTestsInProcToAvoidCompilerBugWhenReraisingTheException(e: EHandlerExceptions);
+    begin
+      Test('e.Count').Assert(e.Count).Equals(1);
+      Test('e.Exceptions[0] is Exception').Assert(e[0] is Exception);
+    end;
+  {$endif}
+
   begin
     Test.RaisesException(EHandlerExceptions);
 
@@ -238,8 +250,12 @@ implementation
       except
         on e: EHandlerExceptions do
         begin
+        {$ifdef DELPHI10_4}
+          DoTestsInProcToAvoidCompilerBugWhenReraisingTheException(e);
+        {$else}
           Test('e.Count').Assert(e.Count).Equals(1);
           Test('e.Exceptions[0] is Exception').Assert(e[0] is Exception);
+        {$endif}
 
           raise;
         end;
@@ -253,6 +269,17 @@ implementation
 
   {-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - --}
   procedure TMulticastNotifyTests.AllHandlersAreCalledAndAggregateExceptionIsRaisedIfMultiplHandlersRaiseExceptions;
+  {$ifdef DELPHI10_4}
+    // In 10.4.1, re-raising the exception crashes immediately with an AV exception.
+    //  This is a compiler bug that can be avoided by passing the capture exception (e)
+    //  to a procedure (for some reason).
+    procedure DoTestsInProcToAvoidCompilerBugWhenReraisingTheException(e: EHandlerExceptions);
+    begin
+      Test('e.Count').Assert(e.Count).Equals(2);
+      Test('e[0] is Exceptions').Assert(e[0] is Exception);
+      Test('e[1] is EDummyException').Assert(e[1] is EDummyException);
+    end;
+  {$endif}
   begin
     Test.RaisesException(EHandlerExceptions);
 
@@ -265,9 +292,13 @@ implementation
     except
       on e: EHandlerExceptions do
       begin
+      {$ifdef DELPHI10_4}
+        DoTestsInProcToAvoidCompilerBugWhenReraisingTheException(e);
+      {$else}
         Test('e.Count').Assert(e.Count).Equals(2);
         Test('e[0] is Exceptions').Assert(e[0] is Exception);
         Test('e[1] is EDummyException').Assert(e[1] is EDummyException);
+      {$endif}
 
         raise;
       end;
