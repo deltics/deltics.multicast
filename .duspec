@@ -1,0 +1,33 @@
+{
+  "id":"deltics.multicast",
+  "version":"",
+  "summary":"Provides a framework for implementing multi-cast events, including a ready-to-use multi-cast version of a TNotifyEvent and a framework for multicast OnDestroy notifications.",
+  "tags":[
+    "deltics",
+    "events",
+    "multicast"
+  ],
+  "compiler":{
+      "language":"pascal",
+      "product":"delphi",
+      "versions":"[7..10.4] !8"
+    },
+  "copyright":"\u00A92020 Jolyon Direnko-Smith",
+  "language":"en",
+  "content":"source",
+  "dependencies":[
+    "deltics.inc:1.0.3"
+  ],
+  "source":{
+      "files":[
+        "src\\deltics.multicast.inc",
+        "src\\Deltics.Multicast.pas",
+        "src\\Deltics.Multicast.Debugging.pas",
+        "src\\Deltics.Multicast.Event.pas",
+        "src\\Deltics.Multicast.Exceptions.pas",
+        "src\\Deltics.Multicast.Notify.pas",
+        "src\\Deltics.Multicast.OnDestroy.pas",
+        "src\\Deltics.Multicast.Types.pas"
+      ]
+    }
+}
