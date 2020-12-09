@@ -50,15 +50,19 @@ interface
 
   type
     EMulticastException = class(Exception)
+    end;
+
+
+    EHandlerExceptions = class(Exception)
     private
       fExceptions: TObjectList;
       function get_Count: Integer;
       function get_Exceptions(const aIndex: Integer): TObject;
+    protected
+      procedure Add(aException: TObject);
     public
       constructor Create;
       destructor Destroy; override;
-      procedure Add;
-      procedure Extract(var aException: TObject);
       property Count: Integer read get_Count;
       property Exceptions[const aIndex: Integer]: TObject read get_Exceptions; default;
     end;
@@ -68,18 +72,14 @@ interface
 implementation
 
   uses
-    Classes;
+    Classes,
+    Types;
 
 
-{ EMulticastException }
+{ EMulticastException ---------------------------------------------------------------------------- }
 
-  procedure EMulticastException.Add;
-  begin
-    fExceptions.Add(TObject(AcquireExceptionObject));
-  end;
-
-
-  constructor EMulticastException.Create;
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  constructor EHandlerExceptions.Create;
   begin
     inherited Create('Multicast event exceptions were raised');
 
@@ -87,7 +87,8 @@ implementation
   end;
 
 
-  destructor EMulticastException.Destroy;
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  destructor EHandlerExceptions.Destroy;
   begin
     fExceptions.Free;
 
@@ -95,25 +96,24 @@ implementation
   end;
 
 
-  procedure EMulticastException.Extract(var aException: TObject);
-  begin
-    aException  := Exceptions[0];
-
-    fExceptions.Extract(aException);
-
-    ReleaseExceptionObject;
-  end;
-
-
-  function EMulticastException.get_Count: Integer;
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function EHandlerExceptions.get_Count: Integer;
   begin
     result := fExceptions.Count;
   end;
 
 
-  function EMulticastException.get_Exceptions(const aIndex: Integer): TObject;
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  function EHandlerExceptions.get_Exceptions(const aIndex: Integer): TObject;
   begin
     result := fExceptions[aIndex];
+  end;
+
+
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure EHandlerExceptions.Add(aException: TObject);
+  begin
+    fExceptions.Add(aException);
   end;
 
 

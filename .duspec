@@ -22,7 +22,6 @@
       "files":[
         "src\\deltics.multicast.inc",
         "src\\Deltics.Multicast.pas",
-        "src\\Deltics.Multicast.Debugging.pas",
         "src\\Deltics.Multicast.Event.pas",
         "src\\Deltics.Multicast.Exceptions.pas",
         "src\\Deltics.Multicast.Notify.pas",

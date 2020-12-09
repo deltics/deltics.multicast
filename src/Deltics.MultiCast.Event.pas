@@ -38,7 +38,7 @@
 
 {$i deltics.multicast.inc}
 
-  unit Deltics.MultiCast.Event;
+  unit Deltics.Multicast.Event;
 
 
 interface
@@ -48,7 +48,7 @@ interface
 
 
   type
-    TMultiCastEvent = class
+    TMulticastEvent = class
     {
       Provides the base class for all multi-cast events.
 
@@ -87,11 +87,10 @@ interface
       constructor Create; virtual;
       destructor Destroy; override;
 
-      procedure Assign(const aSource: TMultiCastEvent);
+      procedure Assign(const aSource: TMulticastEvent);
       procedure DoEvent;
       procedure Enable;
       procedure Disable;
-//      procedure GetListeners(const aList: TList);
 
       property Active: Boolean read fActive;
       property Count: Integer read get_Count;
@@ -106,15 +105,18 @@ implementation
 
   uses
     SysUtils,
-    Deltics.Multicast.Debugging,
     Deltics.Multicast.Exceptions,
     Deltics.Multicast.Types;
+
+
+  type
+    TExceptionHelper = class(EHandlerExceptions);
 
 
 {-- TMultiCastEvent  ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- }
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  constructor TMultiCastEvent.Create;
+  constructor TMulticastEvent.Create;
   {@@TMultiCastEvent.Create
 
     Default constructor for multi-cast events.  Multi-cast event classes
@@ -129,7 +131,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  destructor TMultiCastEvent.Destroy;
+  destructor TMulticastEvent.Destroy;
   {@@TMultiCastEvent.Destroy
 
     Destructor for multi-cast events.  Any handlers remaining in the
@@ -160,7 +162,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TMultiCastEvent.get_Count: Integer;
+  function TMulticastEvent.get_Count: Integer;
   {@@TMultiCastEvent.Count
 
     Returns the number of handlers currently assigned to the event.
@@ -171,7 +173,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TMultiCastEvent.get_Enabled: Boolean;
+  function TMulticastEvent.get_Enabled: Boolean;
   {@@TMultiCastEvent.Enabled
 
     Indicates whether or not the event is currently enabled.
@@ -189,7 +191,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TMultiCastEvent.get_Method(const aIndex: Integer): TMethod;
+  function TMulticastEvent.get_Method(const aIndex: Integer): TMethod;
   {@@TMultiCastEvent.Method
 
     Returns the TMethod at the iIndex position in the list of handlers for
@@ -201,7 +203,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.Assign(const aSource: TMultiCastEvent);
+  procedure TMulticastEvent.Assign(const aSource: TMulticastEvent);
   var
     i: Integer;
   begin
@@ -216,7 +218,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class function TMultiCastEvent.ReferencesAreNIL(const aArray;
+  class function TMulticastEvent.ReferencesAreNIL(const aArray;
                                                   const aCount: Integer): Boolean;
   {@@TMultiCastEvent.ReferencesAreNIL
 
@@ -279,7 +281,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.Add(const aMethod: TMethod);
+  procedure TMulticastEvent.Add(const aMethod: TMethod);
   {@@TMultiCastEvent.Add
 
   Parameters
@@ -354,7 +356,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.Insert(const aMethod: TMethod);
+  procedure TMulticastEvent.Insert(const aMethod: TMethod);
   {@@TMultiCastEvent.Insert
 
   Parameters
@@ -429,7 +431,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.Remove(const aMethod: TMethod);
+  procedure TMulticastEvent.Remove(const aMethod: TMethod);
   {@@TMultiCastEvent.Remove
 
   Parameters
@@ -500,7 +502,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.set_Enabled(const aValue: Boolean);
+  procedure TMulticastEvent.set_Enabled(const aValue: Boolean);
   begin
     case aValue of
       FALSE : Disable;
@@ -510,7 +512,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.ListenerDestroyed(aSender: TObject);
+  procedure TMulticastEvent.ListenerDestroyed(aSender: TObject);
   {@@TMultiCastEvent.ListenerDestroyed
 
   Parameters
@@ -542,8 +544,8 @@ implementation
   end;
 
 
-  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.DoEvent;
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure TMulticastEvent.DoEvent;
   {@@TMultiCastEvent.DoEvent
 
   Calls every handler in the list of handlers for the event.
@@ -569,21 +571,20 @@ implementation
   }
   var
     i: Integer;
-    exception: EMultiCastException;
-    singleException: TObject;
+    exception: EHandlerExceptions;
   begin
     if NOT Assigned(self) or (NOT Enabled) or Active then
       EXIT;
 
     fActive   := TRUE;
-    exception := EMulticastException.Create;
+    exception := EHandlerExceptions.Create;
     try
       for i := 0 to Pred(Count) do
       begin
         try
           Call(Method[i]);
         except
-          exception.Add;
+          TExceptionHelper(exception).Add(AcquireExceptionObject);
         end;
       end;
 
@@ -591,22 +592,15 @@ implementation
       fActive := FALSE;
     end;
 
-    case exception.Count of
-      0 : exception.Free;
-      1 : begin
-            exception.Extract(singleException);
-            exception.Free;
-
-            raise singleException;
-          end;
+    if exception.Count = 0 then
+      exception.Free
     else
       raise exception;
-    end;
   end;
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.Enable;
+  procedure TMulticastEvent.Enable;
   {
     Enables or Disables the event.  An event is create in an Enabled state
      and remains Enabled only as long as all calls to Disable have been
@@ -646,41 +640,21 @@ implementation
       </code>
   }
   begin
-    Dec(fDisableCount);
+    if fDisableCount = 0 then
+      raise EInvalidOperation.Create('Event is already Enabled');
 
-  {$ifdef debug_DelticsMulticast}
-    if DebugAssertions then ASSERT(fDisableCount >= 0, 'Event is already Enabled');
-  {$endif}
+    Dec(fDisableCount);
   end;
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.Disable;
+  procedure TMulticastEvent.Disable;
   {
     <COMBINE TMultiCastEvent.Enable>
   }
   begin
     Inc(fDisableCount);
   end;
-
-
-(*
-  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastEvent.GetListeners(const aList: TList);
-  {
-    Initialises a specified list with all (unique) listeners that have
-     handlers currently assigned to the event.  The current contents of
-     aList will be cleared.
-  }
-  var
-    i: Integer;
-  begin
-    aList.Clear;
-    for i := 0 to Pred(Count) do
-      if aList.IndexOf(Method[i].Data) = -1 then
-        aList.Add(Method[i].Data);
-  end;
-*)
 
 
 

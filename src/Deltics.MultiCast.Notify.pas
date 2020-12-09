@@ -38,7 +38,7 @@
 
 {$i deltics.multicast.inc}
 
-  unit Deltics.MultiCast.Notify;
+  unit Deltics.Multicast.Notify;
 
 
 interface
@@ -56,10 +56,10 @@ interface
       enable multiple TMultiCastNotify objects to be created and assigned to a
       number of reference variables in a single call.
     }
-    PMultiCastNotify = ^TMultiCastNotify;
+    PMulticastNotify = ^TMulticastNotify;
 
 
-    TMultiCastNotify = class(TMultiCastEvent)
+    TMultiCastNotify = class(TMulticastEvent)
     {
       TMultiCastNotify is a multi-cast equivalent of the standard TNotifyEvent.
        This multi-cast event implementation serves two purposes:
@@ -91,15 +91,11 @@ interface
 
 implementation
 
-  uses
-    Deltics.Multicast.Debugging;
-
-
 
 { TMultiCastNotify ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  class procedure TMultiCastNotify.CreateEvents(const aSender: TObject;
+  class procedure TMulticastNotify.CreateEvents(const aSender: TObject;
                                                 const aEvents: array of PMultiCastNotify);
   {@@TMultiCastNotify.CreateEvents
 
@@ -129,9 +125,7 @@ implementation
   var
     i: Integer;
   begin
-  {$ifdef debug_DelticsMulticast}
-    if DebugAssertions then ASSERT(ReferencesAreNIL(aEvents, Length(aEvents)));
-  {$endif}
+    ASSERT(ReferencesAreNIL(aEvents, Length(aEvents)));
 
     for i := Low(aEvents) to High(aEvents) do
       aEvents[i]^ := Create(aSender);
@@ -139,7 +133,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  constructor TMultiCastNotify.Create(const aSender: TObject);
+  constructor TMulticastNotify.Create(const aSender: TObject);
   {@@TMultiCastNotify.Create
 
   Parameters
@@ -163,7 +157,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastNotify.Add(const aHandler: TNotifyEvent);
+  procedure TMulticastNotify.Add(const aHandler: TNotifyEvent);
   {@@TMultiCastNotify.Add
 
   Parameters
@@ -183,7 +177,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastNotify.Insert(const aHandler: TNotifyEvent);
+  procedure TMulticastNotify.Insert(const aHandler: TNotifyEvent);
   {@@TMultiCastNotify.Insert
 
   Parameters
@@ -203,7 +197,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastNotify.Remove(const aHandler: TNotifyEvent);
+  procedure TMulticastNotify.Remove(const aHandler: TNotifyEvent);
   {@@TMultiCastNotify.Remove
 
   Parameters
@@ -221,7 +215,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastNotify.Call(const aMethod: TMethod);
+  procedure TMulticastNotify.Call(const aMethod: TMethod);
   {@@TMultiCastNotify.Call
 
     Calls the specified handler passing the event Sender in the Sender
@@ -233,7 +227,7 @@ implementation
 
 
   {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  procedure TMultiCastNotify.DoEventFor(const aSender: TObject);
+  procedure TMulticastNotify.DoEventFor(const aSender: TObject);
   {@@TMultiCastNotify.DoEventFor
 
     Call all handlers for the multi-cast event, specifying an object to be
