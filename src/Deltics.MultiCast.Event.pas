@@ -544,7 +544,7 @@ implementation
   end;
 
 
-  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
   procedure TMulticastEvent.DoEvent;
   {@@TMultiCastEvent.DoEvent
 
@@ -584,7 +584,7 @@ implementation
         try
           Call(Method[i]);
         except
-          TExceptionHelper(exception).Add;
+          TExceptionHelper(exception).Add(AcquireExceptionObject);
         end;
       end;
 

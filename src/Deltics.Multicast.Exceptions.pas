@@ -59,7 +59,7 @@ interface
       function get_Count: Integer;
       function get_Exceptions(const aIndex: Integer): TObject;
     protected
-      procedure Add;
+      procedure Add(aException: TObject);
     public
       constructor Create;
       destructor Destroy; override;
@@ -76,14 +76,9 @@ implementation
     Types;
 
 
-{ EMulticastException }
+{ EMulticastException ---------------------------------------------------------------------------- }
 
-  procedure EHandlerExceptions.Add;
-  begin
-    fExceptions.Add(TObject(AcquireExceptionObject));
-  end;
-
-
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
   constructor EHandlerExceptions.Create;
   begin
     inherited Create('Multicast event exceptions were raised');
@@ -92,6 +87,7 @@ implementation
   end;
 
 
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
   destructor EHandlerExceptions.Destroy;
   begin
     fExceptions.Free;
@@ -100,15 +96,24 @@ implementation
   end;
 
 
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
   function EHandlerExceptions.get_Count: Integer;
   begin
     result := fExceptions.Count;
   end;
 
 
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
   function EHandlerExceptions.get_Exceptions(const aIndex: Integer): TObject;
   begin
     result := fExceptions[aIndex];
+  end;
+
+
+  {- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -}
+  procedure EHandlerExceptions.Add(aException: TObject);
+  begin
+    fExceptions.Add(aException);
   end;
 
 
